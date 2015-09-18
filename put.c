@@ -1,12 +1,19 @@
 #include "put.h"
 
-int main(int argc, char const **argv)
-{
-  if (argc != 3) {
-    s_exit(1);
-  } else {
-    printf("%s %s %s\n", argv[0], argv[1], argv[2]);
-  }
+int main(int argc, char const **argv) {
+	if (argc != 3) {
+		s_exit(1);
+	}
 
-  return 0;
+	char *src = strdup(argv[1]);
+	char *dest = strdup(argv[2]);
+
+	printf("Source: %s\n", src);
+	printf("Destination: %s\n", dest);
+
+	printf("Username: %s\n", get_username());
+
+	printf("Has write access: %d", has_access(dest, 'w'));
+
+	return 0;
 }
