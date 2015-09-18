@@ -5,9 +5,13 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <pwd.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include "string.h"
 
 int s_exit(int);
 char* get_username();
+int has_access(char*, char);
 
 #endif
