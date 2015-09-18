@@ -3,7 +3,11 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <sys/types.h>
+#include <pwd.h>
+#include "string.h"
 
 int s_exit(int);
+char* get_username();
 
 #endif
