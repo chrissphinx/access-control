@@ -12,6 +12,6 @@
 
 int s_exit(int);
 char* get_username();
-int has_access(char*, char);
+int has_access(const char*, char);
 
 #endif

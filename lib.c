@@ -19,7 +19,7 @@ char* get_username() {
  *
  * This function will check if the access file does not exist or is a symbolic link and returns 0 if so.
 */
-int has_access(char* filename, char access_level) {
+int has_access(const char* filename, char access_level) {
 	// Add .access to filename
 	char access_append[] = ".access\0";
 	char* access_filename;
@@ -55,7 +55,7 @@ int has_access(char* filename, char access_level) {
 		s_exit(0);
 	}
 
-	
+
 	/* Allocate 37 bytes for file line, 32 for username, 1 for space, 1 for access level, 1 for newline character, and 1 for null character */
 	char line[37];
 	char* return_code;
