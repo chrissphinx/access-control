@@ -13,7 +13,7 @@ int main(int argc, char const **argv) {
 
 	printf("Username: %s\n", get_username());
 
-	printf("Has write access: %d", has_access(dest, 'w'));
+	printf("Has write access: %d", has_access(argv[1], 'w'));
 
 	return 0;
 }
