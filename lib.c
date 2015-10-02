@@ -99,7 +99,7 @@ int has_access(const char* filename, char access_level) {
 		space_index = strcspn(line, " ");
 
 
-		char* line_username = strtok(line, " ");
+		char* line_username = strtok(line, " \t");
 
 		if (line_username == NULL) {
 			s_exit(0);
