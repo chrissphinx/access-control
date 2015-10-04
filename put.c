@@ -3,10 +3,19 @@
 int main(int argc, char const **argv)
 {
 	if (argc != 3) {
-		s_exit(1);
+		s_exit(-4);
 	}
 
+	uid_t ruid = -1, euid = -1, suid = -1;
+	int result;
+
+	umask(S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+	getresuid(&ruid, &euid, &suid);
+
 	if (has_access(argv[2], 'w')) {
+		if ((result = setuid(ruid)) != 0) {
+			s_exit(-3);
+		}
 		if (access(argv[1], F_OK | R_OK) != -1) {
 			printf("Overwrite file %s? [Y/n]: ", argv[2]);
 
@@ -14,11 +23,11 @@ int main(int argc, char const **argv)
 			fgets(buf, 2, stdin);
 
 			if (buf[0] == 'n' || buf[0] == 'N') {
-				s_exit(1);
+				s_exit(-5);
 			}
 		}
 	} else {
-		s_exit(1);
+		s_exit(-6);
 	}
 
 	FILE *in = fopen(argv[1], "r");
@@ -26,9 +35,11 @@ int main(int argc, char const **argv)
 		s_exit(-1);
 	}
 
-  umask(S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+	if ((result = setuid(suid)) != 0) {
+		s_exit(-3);
+	}
 	FILE *out = fopen(argv[2], "w");
-	if (in == NULL) {
+	if (out == NULL) {
 		s_exit(-2);
 	}
 
@@ -36,10 +47,9 @@ int main(int argc, char const **argv)
 	int cursor = ftell(in);
 	fseek(in, 0, SEEK_SET);
 	while(cursor--) {
-		fgetc(fgetc(in), out);
+		fputc(fgetc(in), out);
 	}
 
-	fchown(fileno(out), getuid(), -1);
 	fclose(out);
 	fclose(in);
 

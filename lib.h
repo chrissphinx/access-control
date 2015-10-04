@@ -9,7 +9,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
-#include "string.h"
+#include <string.h>
 
 int s_exit(int);
 char* get_username();

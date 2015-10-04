@@ -1,9 +1,9 @@
 #include "lib.h"
 
 int s_exit(int r) {
-  printf("silent exit\n");
-  exit(r);
-  return r;
+	printf("silent exit\n");
+	exit(r);
+	return r;
 }
 
 /* Get username for current user */
@@ -15,7 +15,7 @@ char* get_username() {
 /* has_access: determines whether a user has access to a file or not by checking the access file
  *
  * Parameters: filename: pointer to filename of file
- *             access_level: requested access level for file (r or w)
+ *						 access_level: requested access level for file (r or w)
  * Returns: 1 if the user has the specified access level for the file, 0 if not
  *
  * This function will check if the access file does not exist or is a symbolic link and returns 0 if so.
@@ -31,7 +31,7 @@ int has_access(const char* filename, char access_level) {
 		strcat(access_filename, filename);
 		strcat(access_filename, access_append);
 	} else {
-	    s_exit(0);
+			s_exit(0);
 	}
 
 	struct stat lstatInfo, fstatInfo;
@@ -49,7 +49,7 @@ int has_access(const char* filename, char access_level) {
 	}
 	close(fd);
 	if ((lstatInfo.st_mode != fstatInfo.st_mode) || (lstatInfo.st_ino != fstatInfo.st_ino)) {
-	    s_exit(0);
+			s_exit(0);
 	}
 
 	FILE *access_file = fopen(access_filename, "r");
@@ -95,7 +95,7 @@ int has_access(const char* filename, char access_level) {
 			offset++;
 		}
 
-		// Check where the first space is.  If it is the second to last character, the username does not contain a space and the access level character is one character
+		// Check where the first space is.	If it is the second to last character, the username does not contain a space and the access level character is one character
 		space_index = strcspn(line, " ");
 
 
@@ -104,7 +104,7 @@ int has_access(const char* filename, char access_level) {
 		if (line_username == NULL) {
 			s_exit(0);
 		}
-		
+
 		// Compare lengths of usernames
 		if (username_length == strlen(line_username)) {
 			// Compare current username to one in file
@@ -113,7 +113,7 @@ int has_access(const char* filename, char access_level) {
 				size_t line_access_size = strlen(line_access_str);
 				char line_access = line_access_str[0];
 
-				// Don't overwrite permission.  If existing permission for user, check if has one permission and now has the other (r + w = b)
+				// Don't overwrite permission.	If existing permission for user, check if has one permission and now has the other (r + w = b)
 				if (line_access == 'b' || (access == 'r' && line_access == 'w') || (access == 'w' && line_access == 'r')) {
 					access = 'b';
 				} else if (access != 'b' && (line_access == 'r' || line_access == 'w')) {
@@ -145,11 +145,11 @@ int has_access(const char* filename, char access_level) {
 
 	// All lines have been processed, access file is valid if this point is reached
 
-    fclose(access_file);
+		fclose(access_file);
 
-    if (access == 'b' || access == access_level) {
-    	return 1;
-    } else {
-    	return 0;
-    }
+		if (access == 'b' || access == access_level) {
+			return 1;
+		} else {
+			return 0;
+		}
 }

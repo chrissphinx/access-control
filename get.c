@@ -2,46 +2,56 @@
 
 int main(int argc, char const **argv)
 {
-  if (argc != 3) {
-    s_exit(1);
-  }
+	if (argc != 3) {
+		s_exit(-4);
+	}
 
-  if (has_access(argv[1], 'r')) {
-    if (access(argv[2], F_OK | W_OK) != -1) {
-      printf("Overwrite file %s? [Y/n]: ", argv[2]);
+	uid_t ruid = -1, euid = -1, suid = -1;
+	int result;
 
-      char buf[2] = { 0 };
-      fgets(buf, 2, stdin);
+	umask(S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+	getresuid(&ruid, &euid, &suid);
 
-      if (buf[0] == 'n' || buf[0] == 'N') {
-        s_exit(1);
-      }
-    }
-  } else {
-    s_exit(1);
-  }
+	if (has_access(argv[1], 'r')) {
+		if ((result = setuid(ruid)) != 0) {
+			s_exit(-3);
+		}
+		if (access(argv[2], F_OK | W_OK) != -1) {
+			printf("Overwrite file %s? [Y/n]: ", argv[2]);
 
-  FILE *in = fopen(argv[1], "r");
-  if (in == NULL) {
-    s_exit(-1);
-  }
+			char buf[2] = { 0 };
+			fgets(buf, 2, stdin);
 
-  umask(S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
-  FILE *out = fopen(argv[2], "w");
-  if (in == NULL) {
-    s_exit(-2);
-  }
+			if (buf[0] == 'n' || buf[0] == 'N') {
+				s_exit(-5);
+			}
+		}
+	} else {
+		s_exit(-6);
+	}
 
-  fseek(in, 0, SEEK_END);
-  int cursor = ftell(in);
-  fseek(in, 0, SEEK_SET);
-  while(cursor--) {
-    fputc(fgetc(in), out);
-  }
+	FILE *out = fopen(argv[2], "w");
+	if (out == NULL) {
+		s_exit(-2);
+	}
 
-  fchown(fileno(out), getuid(), -1);
-  fclose(out);
-  fclose(in);
+	if ((result = setuid(suid)) != 0) {
+		s_exit(-3);
+	}
+	FILE *in = fopen(argv[1], "r");
+	if (in == NULL) {
+		s_exit(-1);
+	}
 
-  return 0;
+	fseek(in, 0, SEEK_END);
+	int cursor = ftell(in);
+	fseek(in, 0, SEEK_SET);
+	while(cursor--) {
+		fputc(fgetc(in), out);
+	}
+
+	fclose(out);
+	fclose(in);
+
+	return 0;
 }

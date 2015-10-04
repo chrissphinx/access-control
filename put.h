@@ -1,8 +1,11 @@
 #ifndef __PUT_H__
 #define __PUT_H__
+#define _GNU_SOURCE
 
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <unistd.h>
 #include "lib.h"
 
 #endif
